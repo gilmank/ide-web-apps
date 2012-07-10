@@ -1,0 +1,89 @@
+<!doctype html>  
+<html lang="en">  
+<head>  
+<meta charset="utf-8">  
+<title>IDE Wireframes</title>  
+<meta name="description" content="IDE Wireframes">  
+<meta name="author" content="Oregon State University">  
+<link rel="stylesheet" href="css/style.css">  
+<!--[if lt IE 9]>  
+<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>  
+<![endif]-->  
+</head>  
+<body>  
+<script src="editor.js" type="text/javascript" charset="utf-8"></script>
+<script src="jquery-1.7.2.js" type="text/javascript" charset="utf-8"></script>
+<script src="src/ace.js" type="text/javascript" charset="utf-8"></script>
+  
+
+ 
+ <div id="container">   
+    
+    
+    
+    <div class="divider">
+		
+        
+	</div>
+    
+    <section id="editor-pane">
+      
+      <div id="editor_one" class="editor"> 
+         
+      </div>
+      
+      <div id="editor_two" class="editor">
+     
+       
+      </div>
+      
+    
+    </section>
+    
+	<script>
+			
+        var editor_one = ace.edit("editor_one");
+        editor_one.setTheme("ace/theme/clouds");
+        editor_one.getSession().setMode("ace/mode/javascript");
+		var EditSession = require("ace/edit_session").EditSession;
+		
+		var file_one = new EditSession('first editor');
+		editor_one.setSession(file_one);
+		
+		$(document).ready(function(){
+		  $("button").click(function(){
+		    $.get("test.txt", function(result){
+		      $("preview").html(result);
+		    });
+		  });
+		});	
+		
+		var editor_two = ace.edit("editor_two");
+        editor_two.setTheme("ace/theme/clouds");
+        editor_two.getSession().setMode("ace/mode/javascript");
+		//var EditSession = require("ace/edit_session").EditSession;
+		var file_two = new EditSession("second editor");
+		editor_two.setSession(file_two);
+		
+		
+		
+    </script>
+    
+    <div class="divider">
+		
+        <button style="margin-left: 15px;">Reload preview</button>
+        
+	</div>
+
+    
+    <section id="preview_pane">   
+      <iframe id="preview" frameborder="0" src="iframe/iframe.html">
+          
+      </iframe>
+    </section>
+
+</div>
+
+
+</body>  
+</html>  
