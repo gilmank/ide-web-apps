@@ -12,157 +12,140 @@
 
 <script type="text/javascript">
 
+$(document).ready( function() {
+  $('#file_tree').fileTree({
+      root: '/iframe/' },
+      function(file) {
+          alert(file);
+      });
+});
+
 function button() {
-	
-	var xmlhttp;
-	if (window.XMLHttpRequest)
-	  {// code for IE7+, Firefox, Chrome, Opera, Safari
-	  xmlhttp=new XMLHttpRequest();
-	  }
-	else
-	  {// code for IE6, IE5
-	  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-	  }
-	xmlhttp.onreadystatechange=function()
-	  {
-	  if (xmlhttp.readyState==4 && xmlhttp.status==200)
-		{
-			editor_one.setValue(xmlhttp.responseText);
-		}
-	  }
-	xmlhttp.open("GET","ajax_info.txt",true);
-	xmlhttp.send();
+  
+  var htmlVar = (function (){
+          var htmlVal = null;
+          $.ajax({
+              'async': false,
+              'global': false,
+              'url': 'iframe/iframe.html',
+              success: function (returnedHTML) {
+                  editor_one.setValue(returnedHTML);	
+                  editor_one.gotoLine(1);
+              }
+          });
+          return htmlVal;
+      })();
+      
+      
+      var cssVar = (function (){
+          var cssVal = null;
+          $.ajax({
+              'async': false,
+              'global': false,
+              'url': 'iframe/anoceanofsky.css',
+              success: function (returnedCSS) {
+                  editor_two.setValue(returnedCSS);
+                  editor_two.gotoLine(1);
+              }
+          });
+          return cssVal;
+      })();
+      
+
 }
 
 
 function update() {
-	var previewt = $('#preview')[0].contentWindow.document;
-	previewt.open();
-	previewt.close();
-	
-	var html = aceHTML();
-	var css = aceCSS();	
-	
-	$('body', previewt).append(html);
-	$('head', previewt).append('<style>' + css + '</style>');
+  var previewt = $('#preview')[0].contentWindow.document;
+  previewt.open();
+  previewt.close();
+  
+  var html = aceHTML();
+  var css = aceCSS();	
+  
+  $('body', previewt).append(html);
+  $('head', previewt).append('<style>' + css + '</style>');
 }
 
 function aceHTML() {
-	
-	var html = editor_one.getValue();
-	
-	return html;
+  
+  var html = editor_one.getValue();
+  
+  return html;
 }
 
 function aceCSS() {
-	
-	var css = editor_two.getValue();
-	
-	return css;
-	
+  
+  var css = editor_two.getValue();
+  
+  return css;
+  
 }
-
-function loadXMLDoc()
-{
-var xmlhttp;
-if (window.XMLHttpRequest)
-  {// code for IE7+, Firefox, Chrome, Opera, Safari
-  xmlhttp=new XMLHttpRequest();
-  }
-
-xmlhttp.onreadystatechange=function()
-  {
-  if (xmlhttp.readyState==4 && xmlhttp.status==200)
-    {
-    
-		editor_one.setValue(xmlhttp);
-		
-    }
-  }
-xmlhttp.open("GET","test.txt",true);
-xmlhttp.send();
-}
-
-
 
 </script>
-  
+
 </head>  
 <body>  
 <script src="editor.js" type="text/javascript" charset="utf-8"></script>
 <script src="jquery-1.7.2.js" type="text/javascript" charset="utf-8"></script>
 <script src="src/ace.js" type="text/javascript" charset="utf-8"></script>
+<script src="jqueryFileTree/jqueryFileTree.js" type="text/javascript" charset="utf-8"></script>  
+
+<div id="container">   
+
+  <div class="divider">
+  </div>
   
+  <section id="editor-pane">
+    <div id="editor_one" class="editor html">   
+    </div>
 
- 
- <div id="container">   
-    
-    
-    
-    <div class="divider">
-		
-        
-	</div>
-    
-    <section id="editor-pane">
+    <div id="editor_two" class="editor css">  
+    </div>
+  </section>
+  
+  <script>      
+      var editor_one = ace.edit("editor_one");
+      editor_one.setTheme("ace/theme/dawn");
+      editor_one.getSession().setMode("ace/mode/html");
+      var EditSession = require("ace/edit_session").EditSession;
+  
       
-      <div id="editor_one" class="editor html"> 
-         
-      </div>
+      var file_one = new EditSession('');
+      editor_one.setSession(file_one);
+      editor_one.getSession().setUseWrapMode(true);
       
-     
       
-              <div id="editor_two" class="editor css">
-             
-           
-              </div>
-              
-        
-    </section>
-    
-	<script>
-			
-        var editor_one = ace.edit("editor_one");
-        editor_one.setTheme("ace/theme/clouds");
-        editor_one.getSession().setMode("ace/mode/javascript");
-		var EditSession = require("ace/edit_session").EditSession;
-	
-		
-		var file_one = new EditSession('');
-		editor_one.setSession(file_one);
-		
-		
-		var editor_two = ace.edit("editor_two");
-        editor_two.setTheme("ace/theme/clouds");
-        editor_two.getSession().setMode("ace/mode/javascript");
-		
-		var file_two = new EditSession('');
-		editor_two.setSession(file_two);
-	
-		
-		editor_one.getSession().on('change', update);
-		editor_two.getSession().on('change', update);
-		
-    </script>
-    
-    <div class="divider">
+      var editor_two = ace.edit("editor_two");
+      editor_two.setTheme("ace/theme/clouds");
+      editor_two.getSession().setMode("ace/mode/javascript");
+      
+      var file_two = new EditSession('');
+      editor_two.setSession(file_two);
+      editor_two.getSession().setUseWrapMode(true);
+  
+      
+      editor_one.getSession().on('change', update);
+      editor_two.getSession().on('change', update);   
+  </script>
+  
+  <div class="divider">
+      <button type="button" onclick="button()">load demo</button>
+  </div>
 
-        <button type="button" onclick="button()">test</button>
-	</div>
-
-    
-    <section id="editor preview_pane">   
-      <iframe id="preview" frameborder="0">
-        <!DOCTYPE html>
-		<html>
-			<head></head>
-			<body></body>
-		</html>
-      </iframe>
-    </section>
-	
-    <div id="slider"></div>
-    
+  
+  <section id="editor preview_pane">   
+    <iframe id="preview" frameborder="0">
+      <!--<!DOCTYPE html>
+      <html>
+          <head></head>
+          <body></body>
+      </html>-->
+    </iframe>
+  </section>
+  
+  <div id="slider"></div>
+  
 </div>
 
 
