@@ -8,7 +8,85 @@
 <link rel="stylesheet" href="css/style.css">  
 <!--[if lt IE 9]>  
 <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>  
-<![endif]-->  
+<![endif]-->
+
+<script type="text/javascript">
+
+function button() {
+	
+	var xmlhttp;
+	if (window.XMLHttpRequest)
+	  {// code for IE7+, Firefox, Chrome, Opera, Safari
+	  xmlhttp=new XMLHttpRequest();
+	  }
+	else
+	  {// code for IE6, IE5
+	  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	xmlhttp.onreadystatechange=function()
+	  {
+	  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+		{
+			editor_one.setValue(xmlhttp.responseText);
+		}
+	  }
+	xmlhttp.open("GET","ajax_info.txt",true);
+	xmlhttp.send();
+}
+
+
+function update() {
+	var previewt = $('#preview')[0].contentWindow.document;
+	previewt.open();
+	previewt.close();
+	
+	var html = aceHTML();
+	var css = aceCSS();	
+	
+	$('body', previewt).append(html);
+	$('head', previewt).append('<style>' + css + '</style>');
+}
+
+function aceHTML() {
+	
+	var html = editor_one.getValue();
+	
+	return html;
+}
+
+function aceCSS() {
+	
+	var css = editor_two.getValue();
+	
+	return css;
+	
+}
+
+function loadXMLDoc()
+{
+var xmlhttp;
+if (window.XMLHttpRequest)
+  {// code for IE7+, Firefox, Chrome, Opera, Safari
+  xmlhttp=new XMLHttpRequest();
+  }
+
+xmlhttp.onreadystatechange=function()
+  {
+  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+    {
+    
+		editor_one.setValue(xmlhttp);
+		
+    }
+  }
+xmlhttp.open("GET","test.txt",true);
+xmlhttp.send();
+}
+
+
+
+</script>
+  
 </head>  
 <body>  
 <script src="editor.js" type="text/javascript" charset="utf-8"></script>
@@ -28,16 +106,18 @@
     
     <section id="editor-pane">
       
-      <div id="editor_one" class="editor"> 
+      <div id="editor_one" class="editor html"> 
          
       </div>
       
-      <div id="editor_two" class="editor">
      
-       
-      </div>
       
-    
+              <div id="editor_two" class="editor css">
+             
+           
+              </div>
+              
+        
     </section>
     
 	<script>
@@ -46,42 +126,43 @@
         editor_one.setTheme("ace/theme/clouds");
         editor_one.getSession().setMode("ace/mode/javascript");
 		var EditSession = require("ace/edit_session").EditSession;
+	
 		
-		var file_one = new EditSession('first editor');
+		var file_one = new EditSession('');
 		editor_one.setSession(file_one);
 		
-		$(document).ready(function(){
-		  $("button").click(function(){
-		    $.get("test.txt", function(result){
-		      $("preview").html(result);
-		    });
-		  });
-		});	
 		
 		var editor_two = ace.edit("editor_two");
         editor_two.setTheme("ace/theme/clouds");
         editor_two.getSession().setMode("ace/mode/javascript");
-		//var EditSession = require("ace/edit_session").EditSession;
-		var file_two = new EditSession("second editor");
+		
+		var file_two = new EditSession('');
 		editor_two.setSession(file_two);
+	
 		
-		
+		editor_one.getSession().on('change', update);
+		editor_two.getSession().on('change', update);
 		
     </script>
     
     <div class="divider">
-		
-        <button style="margin-left: 15px;">Reload preview</button>
-        
+
+        <button type="button" onclick="button()">test</button>
 	</div>
 
     
-    <section id="preview_pane">   
-      <iframe id="preview" frameborder="0" src="iframe/iframe.html">
-          
+    <section id="editor preview_pane">   
+      <iframe id="preview" frameborder="0">
+        <!DOCTYPE html>
+		<html>
+			<head></head>
+			<body></body>
+		</html>
       </iframe>
     </section>
-
+	
+    <div id="slider"></div>
+    
 </div>
 
 
