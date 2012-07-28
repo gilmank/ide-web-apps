@@ -63,9 +63,16 @@ body{
 }
 
 #file_tree {
-	width: 200px;
-	height: 100%;
-	float:left;
+	width: 300px;
+	height: 400px;
+	border-top: solid 1px #BBB;
+	border-left: solid 1px #BBB;
+	border-bottom: solid 1px #FFF;
+	border-right: solid 1px #FFF;
+	background: #FFF;
+	overflow: scroll;
+	padding: 5px;	
+	
 }
 
 .divider {

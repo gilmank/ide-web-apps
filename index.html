@@ -1,27 +1,38 @@
 <!doctype html>  
 <html lang="en">  
+
 <head>  
 <meta charset="utf-8">  
 <title>IDE Wireframes</title>  
 <meta name="description" content="IDE Wireframes">  
 <meta name="author" content="Oregon State University">  
+
 <link rel="stylesheet" href="css/style.css">  
+<link href="jqueryFileTree/jqueryFileTree.css" rel="stylesheet" type="text/css" media="screen" />
+
 <!--[if lt IE 9]>  
 <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>  
 <![endif]-->
 
+<script src="editor.js" type="text/javascript" charset="utf-8"></script>
+<script src="jquery-1.7.2.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="src/ace.js" type="text/javascript" charset="utf-8"></script>
+<script src="src/theme-clouds.js" type="text/javascript" charset="utf-8"></script>
+<script src="src/mode-javascript.js" type="text/javascript" charset="utf-8"></script>
+<script src="src/mode-html.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="jqueryFileTree/jqueryFileTree.js" type="text/javascript" charset="utf-8"></script> 
+
 <script type="text/javascript">
 
 $(document).ready( function() {
-  $('#file_tree').fileTree({
-      root: '/iframe/' },
-      function(file) {
-          alert(file);
-      });
+	 	$('#file_tree').fileTree({ root: 'iframe/', script: 'jqueryFileTree/connectors/jqueryFileTree.php', 		loadMessage: 'Un momento...' }, function(file) { 
+						alert(file);
+					});
 });
 
 function button() {
-  
   var htmlVar = (function (){
           var htmlVal = null;
           $.ajax({
@@ -84,12 +95,12 @@ function aceCSS() {
 
 </script>
 
-</head>  
-<body>  
-<script src="editor.js" type="text/javascript" charset="utf-8"></script>
-<script src="jquery-1.7.2.js" type="text/javascript" charset="utf-8"></script>
-<script src="src/ace.js" type="text/javascript" charset="utf-8"></script>
-<script src="jqueryFileTree/jqueryFileTree.js" type="text/javascript" charset="utf-8"></script>  
+</head> 
+
+ 
+<body>   
+
+<div id="file_tree"></div>
 
 <div id="container">   
 
@@ -106,31 +117,24 @@ function aceCSS() {
   
   <script>      
       var editor_one = ace.edit("editor_one");
-      editor_one.setTheme("ace/theme/dawn");
-      editor_one.getSession().setMode("ace/mode/html");
-      var EditSession = require("ace/edit_session").EditSession;
-  
-      
-      var file_one = new EditSession('');
-      editor_one.setSession(file_one);
+      editor_one.setTheme("ace/theme/clouds");
+      var HtmlMode = require("ace/mode/html").Mode;
       editor_one.getSession().setUseWrapMode(true);
+      editor_one.getSession().setMode(new HtmlMode());
       
       
       var editor_two = ace.edit("editor_two");
       editor_two.setTheme("ace/theme/clouds");
-      editor_two.getSession().setMode("ace/mode/javascript");
-      
-      var file_two = new EditSession('');
-      editor_two.setSession(file_two);
-      editor_two.getSession().setUseWrapMode(true);
-  
+   	  var JavascriptMode = require("ace/mode/javascript").Mode;
+   	   editor_two.getSession().setUseWrapMode(true);
+      editor_two.getSession().setMode(new JavascriptMode());
       
       editor_one.getSession().on('change', update);
       editor_two.getSession().on('change', update);   
   </script>
   
   <div class="divider">
-      <button type="button" onclick="button()">load demo</button>
+      <button type="button" onClick="button()">load demo</button>
   </div>
 
   
