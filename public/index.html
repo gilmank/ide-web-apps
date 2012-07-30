@@ -1,0 +1,199 @@
+<!doctype html>  
+<html lang="en">  
+
+<head>  
+<meta charset="utf-8">  
+<title>IDE Wireframes</title>  
+<meta name="description" content="IDE Wireframes">  
+<meta name="author" content="Oregon State University">  
+
+<link rel="stylesheet" href="css/style.css">  
+
+<!--[if lt IE 9]>  
+<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>  
+<![endif]-->
+
+<script src="editor.js" type="text/javascript" charset="utf-8"></script>
+<script src="jquery-1.7.2.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="src/ace.js" type="text/javascript" charset="utf-8"></script>
+<script src="src/theme-clouds.js" type="text/javascript" charset="utf-8"></script>
+<script src="src/mode-javascript.js" type="text/javascript" charset="utf-8"></script>
+<script src="src/mode-html.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="jstree/jquery.jstree.js" type="text/javascript" charset="utf-8"></script>
+
+<script type="text/javascript">
+
+$(function () {
+
+	$('#file_tree')
+		.jstree({
+			"plugins" : ["themes", "html_data", "ui", "crrm", "hotkeys"],
+			"core"	: { "initially_open" : [ "phtml_1"]}
+		})
+		
+		.bind("loaded.jstree", function(event, data) {
+			
+		});
+		
+		setTimeout(function() { $("#file_tree").jstree("set_focus"); }, 500);
+		setTimeout(function () { $.jstree._focused().select_node("#phtml_1"); }, 1000);
+		setTimeout(function () { $.jstree._reference("#phtml_1").close_node("#phtml_1"); }, 1500);
+		
+		$("file_tree").bind("open_node.jstree", function (e, data) {
+		
+		data.inst.select_node("#phtml_2", true);
+		});
+		
+		setTimeout(function () { $.jstree._reference("#phtml_1").open_node("#phtml_1"); }, 2500);
+		
+});
+
+$(document).ready( function() {
+	 	$('#file_tree').fileTree({ root: 'iframe/', script: 'jqueryFileTree/connectors/jqueryFileTree.php', 		loadMessage: 'Un momento...' }, function(file) { 
+						alert(file);
+					});
+});
+
+function button() {
+  var htmlVar = (function (){
+          var htmlVal = null;
+          $.ajax({
+              'async': false,
+              'global': false,
+              'url': 'iframe/iframe.html',
+              success: function (returnedHTML) {
+                  editor_one.setValue(returnedHTML);	
+                  editor_one.gotoLine(1);
+              }
+          });
+          return htmlVal;
+      })();
+      
+      
+      var cssVar = (function (){
+          var cssVal = null;
+          $.ajax({
+              'async': false,
+              'global': false,
+              'url': 'iframe/anoceanofsky.css',
+              success: function (returnedCSS) {
+                  editor_two.setValue(returnedCSS);
+                  editor_two.gotoLine(1);
+              }
+          });
+          return cssVal;
+      })();
+      
+
+}
+
+
+function update() {
+  var previewt = $('#preview')[0].contentWindow.document;
+  previewt.open();
+  previewt.close();
+  
+  var html = aceHTML();
+  var css = aceCSS();	
+  
+  $('body', previewt).append(html);
+  $('head', previewt).append('<style>' + css + '</style>');
+}
+
+function aceHTML() {
+  
+  var html = editor_one.getValue();
+  
+  return html;
+}
+
+function aceCSS() {
+  
+  var css = editor_two.getValue();
+  
+  return css;
+  
+}
+
+</script>
+
+</head> 
+
+ 
+<body>   
+
+<div id="file_tree">
+	<ul>
+		<li id="phtml_1">
+			<a href="#">Root node 1</a>
+			<ul>
+				<li id="phtml_2">
+					<a href="#">Child node 1</a>
+				</li>
+				<li id="phtml_3">
+					<a href="#">Child node 2</a>
+				</li>
+			</ul>
+		</li>
+		<li id="phtml_4">
+			<a href="#">Root node 2</a>
+		</li>
+	</ul>
+</div>
+
+
+<div id="container">   
+
+  <div class="divider">
+  </div>
+  
+  <section id="editor-pane">
+    <div id="editor_one" class="editor html">   
+    </div>
+
+    <div id="editor_two" class="editor css">  
+    </div>
+  </section>
+  
+  <script>      
+      var editor_one = ace.edit("editor_one");
+      editor_one.setTheme("ace/theme/clouds");
+      var HtmlMode = require("ace/mode/html").Mode;
+      editor_one.getSession().setUseWrapMode(true);
+      editor_one.getSession().setMode(new HtmlMode());
+      
+      
+      var editor_two = ace.edit("editor_two");
+      editor_two.setTheme("ace/theme/clouds");
+      var CssMode = require("ace/mode/css").Mode;
+      editor_two.getSession().setUseWrapMode(true);
+      editor_two.getSession().setMode(new CssMode());
+      
+      editor_one.getSession().on('change', update);
+      editor_two.getSession().on('change', update);   
+  </script>
+  
+  <div class="divider">
+      <button type="button" onClick="button()">load demo</button>
+  </div>
+
+  
+  <section id="editor preview_pane">   
+    <iframe id="preview" frameborder="0">
+      <!--<!DOCTYPE html>
+      <html>
+          <head></head>
+          <body></body>
+      </html>-->
+    </iframe>
+  </section>
+  
+  <div id="slider"></div>
+  
+</div>
+
+
+</body>  
+</html>  
